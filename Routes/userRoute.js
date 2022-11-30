@@ -5,8 +5,6 @@ const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 var jwt = require("jsonwebtoken");
 
-const Cart = require("../Models/productschema");
-
 const mySign = "Random String";
 
 // const middleware = [
@@ -44,12 +42,12 @@ router.post("/login", async (req, res) => {
         //   ..... further code to maintain authentication like jwt or sessions
         // const token = jwt.sign({ id: user._id }, mySign);
         // console.log(token);
-        res.send("Login successfull" );
+        res.send("Login successfull");
         // console.log(cmp);
       } else {
         res.send("Wrong username or password.");
       }
-    } 
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server error Occured");
@@ -83,7 +81,6 @@ router.get("/getuser", (req, res) => {
   userSchema.find().then((r) => res.send(r));
 });
 
-
 // router.delete("/getuser/:id", (req, res) => {
 //   userSchema
 //     .findByIdAndDelete(req.params.id)
@@ -98,48 +95,18 @@ router.get("/getuser", (req, res) => {
 
 //add cart
 
-router.get("/cart", async (req,res)=>{
+router.get("/cart", async (req, res) => {
   const owner = req.user._id;
-  try{
-    const cart = await Cart.findOne({owner});
-    if (cart && cart.items.length > 0){
-      res.status(200).send(cart)
-    }else{
-      res.send(null)
+  try {
+    const cart = await Cart.findOne({ owner });
+    if (cart && cart.items.length > 0) {
+      res.status(200).send(cart);
+    } else {
+      res.send(null);
     }
-  }
-  catch(error){
+  } catch (error) {
     res.status(500).send();
   }
-  
-
 });
-
-router.post("/cart", async (req,res)=>{
-  const owner = req.user._id;
-  const { itemId,title, quantity,description,price,image } = req.body;
-
-  try{
-    const cart = await  Cart.findOne({owner})
-    const item = await Cart.findOne({ _id: itemId });
-    if (!item) {
-      res.status(404).send({ message: "item not found" });
-      return;
-    }
-
-    
-
-  }
-  
-  catch (error) {
-    console.log(error);
-    res.status(500).send("something went wrong");
-  }
-
-});
-
-
-
-
 
 module.exports = router;

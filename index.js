@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./Routes/userRoute");
+const productRouter = require("./Routes/addproduct");
 const cors = require("cors");
 
 const app = express();
@@ -13,5 +14,6 @@ mongoose.connect("mongodb://localhost:27017/newcollection", () => {
 });
 
 app.use("/new", router);
+app.use("/new", productRouter);
 
 app.listen(5000);
