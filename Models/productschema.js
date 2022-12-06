@@ -5,7 +5,7 @@ const product = mongoose.Schema({
     type: String,
     required: [true, "Please include the product name"],
   },
-  description: {
+  size: {
     type: String,
   },
   price: {

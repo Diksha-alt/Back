@@ -5,10 +5,10 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./images");
+    cb(null, "../frontend/public");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + file.originalname;
+    const uniqueSuffix = Date.now();
     cb(null, file.fieldname + "-" + uniqueSuffix);
   },
 });
@@ -16,14 +16,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/addproduct", upload.single("image"), async (req, res) => {
-  const { productName, quantity, description, price, image } = req.body;
-  console.log("file", req.file.filename);
+  const { productName, quantity, size, price, image } = req.body;
+  console.log("file", req.file);
+  //   res.send("aa");
 
   try {
     const newProduct = new productSchema({
       productName,
       quantity,
-      description,
+      size,
       price,
       image: req.file.filename,
     });
@@ -32,13 +33,17 @@ router.post("/addproduct", upload.single("image"), async (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("Product added");
+        res.json({ data });
       }
     });
   } catch (error) {
     console.log(error);
     res.status(500).send("something went wrong");
   }
+});
+
+router.get("/addproduct", (req, res) => {
+  productSchema.find().then((r) => res.send(r));
 });
 
 module.exports = router;
