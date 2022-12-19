@@ -38,70 +38,78 @@ router.post("/addcart", async (req, res) => {
 
 })
 
+
+router.post("/creatcart", async (req, res) => {
+  try {
+    console.log(req.body.productId);
+    const newCart = await CartSchema.create({
+      userId: req.body.userId,
+      items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+
+    });
+    res.status(200).json({ newCart })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 router.get("/addcart", async (req, res) => {
   const UserId = req.body.userId;
-    try{
-        let cart = await CartSchema.findOne({UserId});
-        console.log(cart)
-        if(cart || cart.length>0){
-            res.send(cart);
-        }
-        else{
-            res.send("empty cart",null);
-        }
+  try {
+    let cart = await CartSchema.findOne({ UserId });
+    console.log(cart)
+    if (cart || cart.length > 0) {
+      res.send(cart);
     }
-    catch(err){
-        console.log(err);
-        res.status(500).send("Something went wrong");
+    else {
+      res.send("empty cart", null);
     }
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send("Something went wrong");
+  }
 
 })
 
 router.get("/addcartitems", async (req, res) => {
   const userId = req.body.userId;
-  const { productId, quantity} = req.body;
+  const { productId, quantity } = req.body;
 
-    try{
-      const cart = await CartSchema.findOne({userId});
-      const item = await productSchema.findOne({_id: productId});
-      if(!item){
-        res.status(404).send('Item not found!')
+  try {
+    const cart = await CartSchema.findOne({ userId });
+    const item = await productSchema.findOne({ _id: productId });
+    if (!item) {
+      res.status(404).send('Item not found!')
     }
-        const price = item.price;
-        const name = item.productName;
+    const price = item.price;
+    const name = item.productName;
     console.log(price)
-        if(cart){
-          // if cart exists for the user
-          let itemIndex = cart.findIndex(p => p.productId == productId);
-        }
-         // Check if product exists or not
-         if(itemIndex > -1)
-         {
-             let productItem = cart.items[itemIndex];
-             productItem.quantity += quantity;
-             cart.items[itemIndex] = productItem;
-         }
-         else {
-             cart.items.push({ productId, name, quantity, price });
-         }
-         cart.bill += quantity*price;
-         cart = await cart.save();
-         return res.status(201).send(cart);
-     }
-     else{
-         // no cart exists, create one
-         const newCart = await Cart.create({
-             userId,
-             items: [{ productId, name, quantity, price }],
-             bill: quantity*price
-         });
-         return res.status(201).send(newCart);
-     }       
-    }
-    catch(err){
-        console.log(err);
-        res.status(500).send("Something went wrong");
-    }
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send("Something went wrong");
+  }
 
 })
 

@@ -9,6 +9,7 @@ const CartSchema = new mongoose.Schema({
     items: [{
         productId: {
             type: String,
+            required: true
         },
         quantity: {
             type: Number,
@@ -16,8 +17,7 @@ const CartSchema = new mongoose.Schema({
             min: [1, 'Quantity can not be less then 1.'],
             default: 1
         }
-    }],
-    price: String
+    }]
 });
 
 
