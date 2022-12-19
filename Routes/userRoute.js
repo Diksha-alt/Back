@@ -24,25 +24,19 @@ const mySign = "Random String";
 
 const User = userSchema;
 router.post("/login", async (req, res) => {
-  // const neww = true;
-  // if (false) {
-  //   res.status(400).json({ message: "Invalid values" });
-  // } else if (neww === true) {
-  //   console.log("Header is ", req.headers);
-  //   const token = jwt.verify(req.headers.token, mySign);
-  //   res.send(token);
-  // }
   try {
     const user = await User.findOne({ username: req.body.username });
-
-    // console.log(user);
     if (user) {
       const cmp = await bcrypt.compare(req.body.password, user.password);
+      // console.log(req.body.password, user.password);
       if (cmp) {
         //   ..... further code to maintain authentication like jwt or sessions
-        // const token = jwt.sign({ id: user._id }, mySign);
+        const token = jwt.sign({ id: user._id }, mySign);
         // console.log(token);
-        res.send("Login successfull");
+        res.json({
+          login: true,
+          token:token
+        });
         // console.log(cmp);
       } else {
         res.send("Wrong username or password.");
