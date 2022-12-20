@@ -9,11 +9,11 @@ const CartSchema = new mongoose.Schema({
     items: [{
         productId: {
             type: String,
-            required: true
+            
         },
         quantity: {
             type: Number,
-            required: true,
+            
             min: [1, 'Quantity can not be less then 1.'],
             default: 1
         }

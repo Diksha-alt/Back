@@ -41,20 +41,41 @@ router.post("/addcart", async (req, res) => {
 
 router.post("/creatcart", async (req, res) => {
   try {
-    console.log(req.body.productId);
+   
     const newCart = await CartSchema.create({
       userId: req.body.userId,
       items: [{ productId: req.body.productId, quantity: req.body.quantity }]
 
     });
-    res.status(200).json({ newCart })
+    // res.status(200).json({ newCart })
+    if(!newCart){
+      const newwCart = await CartSchema.create({
+        userId: req.body.userId,
+        items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+  
+      });
+      res.status(200).json({ newwCart })
+    }
+      else{
+        const productCart=  await CartSchema.findOneAndUpdate({
+          items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+        })
+        
+        res.status(201).json(productCart);
+        console.log("product addedd",productCart)
+      }
+      
+      // let itemIndex = newCart.items.findIndex(p => p.productId == productId);
+    }
+    // console.log(itemIndex)
 
-  } catch (error) {
+   catch (error) {
     console.log(error);
     res.status(500).send(error);
   }
 
 })
+
 
 
 
@@ -92,26 +113,26 @@ router.get("/addcart", async (req, res) => {
 
 })
 
-router.get("/addcartitems", async (req, res) => {
-  const userId = req.body.userId;
-  const { productId, quantity } = req.body;
+// router.get("/addcartitems", async (req, res) => {
+//   const userId = req.body.userId;
+//   const { productId, quantity } = req.body;
 
-  try {
-    const cart = await CartSchema.findOne({ userId });
-    const item = await productSchema.findOne({ _id: productId });
-    if (!item) {
-      res.status(404).send('Item not found!')
-    }
-    const price = item.price;
-    const name = item.productName;
-    console.log(price)
-  }
-  catch (err) {
-    console.log(err);
-    res.status(500).send("Something went wrong");
-  }
+//   try {
+//     const cart = await CartSchema.findOne({ userId });
+//     const item = await productSchema.findOne({ _id: productId });
+//     if (!item) {
+//       res.status(404).send('Item not found!')
+//     }
+//     const price = item.price;
+//     const name = item.productName;
+//     console.log(price)
+//   }
+//   catch (err) {
+//     console.log(err);
+//     res.status(500).send("Something went wrong");
+//   }
 
-})
+// })
 
 
 router.post("/addproduct", upload.single("image"), async (req, res) => {
