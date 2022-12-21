@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-router.post("/addcart", async (req, res) => {
+router.post("/oldaddcart", async (req, res) => {
   try {
     const newProduct = new CartSchema({
       price: req.body.price,
@@ -33,56 +33,49 @@ router.post("/addcart", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send("something went wrong");
-  }
-
-})
-
-
-router.post("/creatcart", async (req, res) => {
-  try {
-   
-    const newCart = await CartSchema.create({
-      userId: req.body.userId,
-      items: [{ productId: req.body.productId, quantity: req.body.quantity }]
-
-    });
-    // res.status(200).json({ newCart })
-    if(!newCart){
-      const newwCart = await CartSchema.create({
-        userId: req.body.userId,
-        items: [{ productId: req.body.productId, quantity: req.body.quantity }]
-  
-      });
-      res.status(200).json({ newwCart })
-    }
-      else{
-        const productCart=  await CartSchema.findOneAndUpdate({
-          items: [{ productId: req.body.productId, quantity: req.body.quantity }]
-        })
-        
-        res.status(201).json(productCart);
-        console.log("product addedd",productCart)
-      }
-      
-      // let itemIndex = newCart.items.findIndex(p => p.productId == productId);
-    }
-    // console.log(itemIndex)
-
-   catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 
 })
 
 
+// router.post("/creatcart", async (req, res) => {
+//   try {
 
 
+    // const newCart = await CartSchema.create({
+    //   userId: req.body.userId,
+    //   items: [{ productId: req.body.productId, quantity: req.body.quantity }]
 
+    // });
+    // res.status(200).json({ newCart })
+    // if(!newCart){
+    //   const newwCart = await CartSchema.create({
+    //     userId: req.body.userId,
+    //     items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+  
+    //   });
+    //   res.status(200).json({ newwCart })
+    // }
+    //   else{
+    //     const productCart=  await CartSchema.findOneAndUpdate({
+    //       items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+    //     })
+        
+    //     res.status(201).json(productCart);
+    //     console.log("product addedd",productCart)
+    //   }
+      
+      // let itemIndex = newCart.items.findIndex(p => p.productId == productId);
+    // }
+    // console.log(itemIndex)
 
+//    catch (error) {
+//     console.log(error);
+//     res.status(500).send(error);
+//   }
 
-
+// })
 
 
 
@@ -95,15 +88,20 @@ router.post("/creatcart", async (req, res) => {
 
 
 router.get("/addcart", async (req, res) => {
-  const UserId = req.body.userId;
+  const UserId = req.body.UserId;
   try {
     let cart = await CartSchema.findOne({ UserId });
-    console.log(cart)
-    if (cart || cart.length > 0) {
-      res.send(cart);
+    // console.log(cart)
+    if (cart ) {
+      res.send("cart available");
     }
     else {
-      res.send("empty cart", null);
+      const newCart = await CartSchema.create({
+       userId: req.body.userId,
+         items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+      })
+      res.status(200).json({ newCart })
+      // res.send("empty cart")
     }
   }
   catch (err) {

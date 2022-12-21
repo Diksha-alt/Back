@@ -89,18 +89,18 @@ router.get("/getuser", (req, res) => {
 
 //add cart
 
-router.get("/cart", async (req, res) => {
-  const owner = req.user._id;
-  try {
-    const cart = await Cart.findOne({ owner });
-    if (cart && cart.items.length > 0) {
-      res.status(200).send(cart);
-    } else {
-      res.send(null);
-    }
-  } catch (error) {
-    res.status(500).send();
-  }
-});
+// router.get("/cart", async (req, res) => {
+//   const owner = req.user._id;
+//   try {
+//     const cart = await Cart.findOne({ owner });
+//     if (cart && cart.items.length > 0) {
+//       res.status(200).send(cart);
+//     } else {
+//       res.send(null);
+//     }
+//   } catch (error) {
+//     res.status(500).send();
+//   }
+// });
 
 module.exports = router;
