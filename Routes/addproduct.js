@@ -43,6 +43,8 @@ router.post("/oldaddcart", async (req, res) => {
 //   try {
 
 
+
+   
     // const newCart = await CartSchema.create({
     //   userId: req.body.userId,
     //   items: [{ productId: req.body.productId, quantity: req.body.quantity }]
@@ -93,23 +95,67 @@ router.get("/addcart", async (req, res) => {
     let cart = await CartSchema.findOne({ UserId });
     // console.log(cart)
     if (cart ) {
-      res.send("cart available");
+      res.send(cart);
     }
     else {
-      const newCart = await CartSchema.create({
-       userId: req.body.userId,
-         items: [{ productId: req.body.productId, quantity: req.body.quantity }]
-      })
-      res.status(200).json({ newCart })
-      // res.send("empty cart")
+      // const newCart = await CartSchema.create({
+      //  userId: req.body.userId,
+      //    items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+      // })
+      // res.status(200).json({ newCart })
+      res.send("empty cart")
     }
   }
   catch (err) {
     console.log(err);
-    res.status(500).send("Something went wrong");
+    res.status(500).send(err);
   }
 
 })
+
+
+router.post("/addcartitems", async (req, res) => {
+  const userId = req.params.id;
+  const {productId, quantity} = req.body;
+  try{
+    let cart = await CartSchema.findOne({userId});
+    let item = await CartSchema.findOne({id_:productId})
+    
+
+    if(!item){
+      res.status(404).send("Items is not found")
+    }
+    if(cart){
+      let itemIndex = cart.items.findIndex(p =>p.productId == productId)
+      console.log("Item",itemIndex)
+      
+    if(itemIndex>-1){
+      let productItem = cart.items[itemIndex];
+      productId.items += quantity
+      cart.items[itemIndex] = productItem 
+    }
+    else{
+      cart.push.items({productId,quantity})
+      res.send("Product added in cart");
+    }
+    
+  }
+  
+  else{
+    const newCart = await CartSchema.create({
+      userId: req.body.userId,
+        items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+     })
+     res.status(200).json({ newCart })
+  }
+  }
+  catch(err){
+    res.status(500).send(err)
+  }
+
+})
+
+
 
 // router.get("/addcartitems", async (req, res) => {
 //   const userId = req.body.userId;
