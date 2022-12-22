@@ -135,7 +135,7 @@ router.post("/addcartitems", async (req, res) => {
       cart.items[itemIndex] = productItem 
     }
     else{
-      cart.push.items({productId,quantity})
+      cart.items.push({productId,quantity})
       res.send("Product added in cart");
     }
     
